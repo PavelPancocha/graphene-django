@@ -16,6 +16,7 @@ from graphql import (
     get_operation_ast,
     parse,
     validate_schema,
+    version_info as graphql_core_version_info,
 )
 from graphql.error import GraphQLError
 from graphql.execution.middleware import MiddlewareManager
@@ -358,6 +359,11 @@ class GraphQLView(View):
                 execute_options[
                     "execution_context_class"
                 ] = self.execution_context_class
+            if graphql_core_version_info >= (3, 3):
+                # graphql-core 3.3 completes list values that have __aiter__ (e.g. Django
+                # QuerySets) asynchronously, which this synchronous view cannot await.
+                # Iterate them synchronously, like graphql-core 3.2 and graphql_sync() do.
+                execute_options["is_async_iterable"] = lambda _value: False
 
             if (
                 operation_ast is not None
