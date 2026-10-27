@@ -9,6 +9,8 @@ with open("graphene_django/__init__.py", "rb") as f:
     version = str(
         ast.literal_eval(_version_re.search(f.read().decode("utf-8")).group(1))
     )
+# zemtu fork build: the local version label lets pip replace an installed PyPI graphene-django of the same release.
+version += "+zemtu.1"
 
 rest_framework_require = ["djangorestframework>=3.6.3"]
 
